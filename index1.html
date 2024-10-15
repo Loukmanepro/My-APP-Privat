@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع دراسة الدوال والرسوم البيانية</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .upper-frame {
+            width: 100%;
+            height: 250px;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* يمنع التمرير في حالة الرسم البياني */
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .study-container {
+            display: none; /* إخفاء حاوية الدراسة في البداية */
+            overflow-y: auto; /* تمكين التمرير العمودي */
+            max-height: 250px; /* أقصى ارتفاع للحاوية */
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #333;
+            border: 1px solid #444;
+        }
+
+        .lower-frame {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .function-label {
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            max-width: 200px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .buttons button {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="button-container">
+                <button id="btnGraph">بيان</button>
+                <button id="btnStudy">دراسة</button>
+            </div>
+        </div>
+        <div class="upper-frame">
+            <div class="chart-container" id="chartContainer"></div>
+            <div class="study-container" id="studyContainer">
+                <h3>دراسة الدالة:</h3>
+                <p id="definitionRange">مجال التعريف: ...</p>
+                <p id="continuity">الاستمرارية: ...</p>
+                <p id="derivative">المشتقة: ...</p>
+                <p id="secondDerivative">مشتقة المشتقة: ...</p>
+                <p id="originalFunction">الدالة الأصلية: ...</p>
+                <p id="zeros">الانعدامات: ...</p>
+                <p id="limits">النهايات: ...</p>
+            </div>
+        </div>
+        <div class="lower-frame">
+            <span class="function-label">F(x) =</span>
+            <input type="text" id="functionInput" placeholder="أدخل الدالة هنا">
+            <div class="buttons">
+                <button id="btnOk">Ok</button>
+                <button id="btnCancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnGraph = document.getElementById("btnGraph");
+        const btnStudy = document.getElementById("btnStudy");
+        const chartContainer = document.getElementById("chartContainer");
+        const studyContainer = document.getElementById("studyContainer");
+        const functionInput = document.getElementById("functionInput");
+        const btnOk = document.getElementById("btnOk");
+        const btnCancel = document.getElementById("btnCancel");
+
+        let chart;
+
+        // الدالة لرسم الرسم البياني
+        function drawGraph(expression) {
+            const ctx = document.createElement('canvas');
+            chartContainer.innerHTML = ''; // مسح المحتوى السابق
+            chartContainer.appendChild(ctx);
+
+            const xValues = [];
+            const yValues = [];
+            for (let x = -10; x <= 10; x += 0.1) {
+                try {
+                    const y = math.evaluate(expression, { x });
+                    xValues.push(x);
+                    yValues.push(y);
+                } catch (error) {
+                    console.error("خطأ في تقييم الدالة:", error);
+                    return; // إذا كانت الدالة غير صالحة، اخرج من الدالة
+                }
+            }
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'الرسم البياني',
+                        data: yValues,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'X',
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: '#444'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'F(x)',
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: '#444'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // تحديث الدراسة بناءً على الدالة المدخلة
+        function updateStudy(expression) {
+            const parsedExpression = math.parse(expression);
+            const derivative = math.derivative(parsedExpression, 'x').toString();
+            const originalFunction = parsedExpression.toString();
+            const limitAtZero = math.limit(parsedExpression, 'x', 0).toString();
+            const zeros = findZeros(expression);
+
+            document.getElementById("definitionRange").innerText = "مجال التعريف: ..."; // يمكنك تحليل المجال هنا
+            document.getElementById("continuity").innerText = "الاستمرارية: ..."; // يمكنك حساب الاستمرارية هنا
+            document.getElementById("derivative").innerText = "المشتقة: " + derivative;
+            document.getElementById("secondDerivative").innerText = "مشتقة المشتقة: " + math.derivative(derivative, 'x').toString();
+            document.getElementById("originalFunction").innerText = "الدالة الأصلية: " + originalFunction;
+            document.getElementById("zeros").innerText = "الانعدامات: " + zeros.join(", ");
+            document.getElementById("limits").innerText = "النهايات: " + limitAtZero;
+        }
+
+        // دالة لحساب الانعدامات (الأصفار)
+        function findZeros(expression) {
+            // ملاحظة: يمكن استخدام طريقة أكثر تعقيداً للعثور على الأصفار
+            const zeros = [];
+            for (let x = -10; x <= 10; x += 0.1) {
+                try {
+                    const y = math.evaluate(expression, { x });
+                    if (math.abs(y) < 0.01) { // إذا كان الناتج قريباً من الصفر
+                        zeros.push(x);
+                    }
+                } catch (error) {
+                    console.error("خطأ في تقييم الدالة:", error);
+                }
+            }
+            return zeros;
+        }
+
+        // الأحداث للأزرار
+        btnGraph.addEventListener("click", () => {
+            const expression = functionInput.value;
+            drawGraph(expression);
+            studyContainer.style.display = "none"; // إخفاء دراسة الدالة
+            chartContainer.style.display = "block"; // عرض الرسم البياني
+        });
+
+        btnStudy.addEventListener("click", () => {
+            const expression = functionInput.value;
+            updateStudy(expression);
+            chartContainer.style.display = "none"; // إ

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض التطبيقات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* خلفية الصفحة سوداء */
+            color: #fff; /* لون الخط أبيض */
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+            text-align: center; /* توسيط العنوان */
+        }
+
+        h1 {
+            color: #fff; /* لون العنوان أبيض */
+        }
+
+        #appContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* توسيط المربعات */
+        }
+
+        .app-box {
+            background-color: #000; /* خلفية المربع سوداء */
+            border: 2px solid #28a745; /* حدود المربع باللون الأخضر */
+            border-radius: 5px; /* زوايا دائرية */
+            padding: 10px;
+            margin: 10px 0; /* مسافة بين المربعات */
+            width: 300px; /* عرض ثابت للمربعات */
+            text-align: center; /* توسيط المحتوى داخل المربع */
+        }
+
+        .app-description {
+            color: #28a745; /* لون النص الأخضر */
+            margin-bottom: 10px; /* مسافة بين الوصف والزر */
+        }
+
+        .app-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #28a745; /* لون الزر أخضر */
+            color: #000; /* لون الكتابة داخل الزر أسود */
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .app-button:hover {
+            background-color: #218838; /* لون الزر عند التمرير عليه */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>تطبيقات لقمان الحاج سعيد</h1>
+    </header>
+    <main>
+        <div id="appContainer">
+            <div class="app-box">
+                <p class="app-description">نبذة عن تطبيق 1</p>
+                <a href="https://raw.githubusercontent.com/myusername/my-apps/main/app1.html" class="app-button">تطبيق 1</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
